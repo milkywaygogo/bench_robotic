@@ -2,6 +2,7 @@
 __pycache__/
 .pytest_cache/
 *.py[cod]
-results/
+results/*
+!results/sample.png
 *.lance
 .venv/
