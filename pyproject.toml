@@ -1,0 +1,49 @@
+[project]
+name = "bench-robotic"
+version = "0.1.0"
+description = "Ray Data ingest pipeline examples for robot learning datasets"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "ray[data]>=2.50",
+  "pylance>=0.30",
+  "huggingface_hub>=0.30",
+]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.dependencies]
+python = "3.12.*"
+ffmpeg = ">=7"
+av = ">=14"
+numpy = ">=2"
+pyarrow = ">=18"
+pytest = ">=8"
+ruff = ">=0.8"
+
+[tool.pixi.tasks]
+download = { cmd = "python -m bench_robotic download", env = { PYTHONPATH = "src" } }
+ingest = { cmd = "python -m bench_robotic ingest", env = { PYTHONPATH = "src", SVT_LOG = "1" } }
+sample = { cmd = "python -m bench_robotic sample", env = { PYTHONPATH = "src" } }
+test = { cmd = "pytest -q", env = { PYTHONPATH = "src", SVT_LOG = "1" } }
+doctest = { cmd = "pytest -q --doctest-modules src --ignore=src/bench_robotic/__main__.py", env = { PYTHONPATH = "src" } }
+lint = "ruff check"
+
+[tool.ruff]
+extend-exclude = [".pixi"]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E402"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.pyright]
+venvPath = ".pixi/envs"
+venv = "default"
+extraPaths = ["src"]
